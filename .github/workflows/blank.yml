@@ -1,0 +1,30 @@
+name: Build Chain Generate Files
+
+on: [pull_request]
+
+jobs:
+  build-chain:
+    runs-on: ubuntu-latest
+    name: File Generation
+    steps:
+      - name: Image Generation
+        id: image-generation
+        uses: Ginxo/build-chain-files-generator@v1.0.0
+        with:
+          definition-file: https://raw.githubusercontent.com/kiegroup/droolsjbpm-build-bootstrap/master/.ci/pull-request-config.yaml
+          file-type: image
+          output-file-path: ./image.png
+      - name: Repository List Generation
+        id: repository-list-generation
+        uses: Ginxo/build-chain-files-generator@v1.0.0
+        with:
+          definition-file: https://raw.githubusercontent.com/kiegroup/droolsjbpm-build-bootstrap/master/.ci/pull-request-config.yaml
+          file-type: repository-list
+          output-file-path: ./repository-list.txt
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: generated-files
+          path: |
+            **/image.png
+            **/repository-list.txt
